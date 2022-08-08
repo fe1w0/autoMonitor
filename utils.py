@@ -44,7 +44,7 @@ def print_warning_log(item):
             console.print("[*] Warning ⚠️ : Threat", item["type"], item["threat_name"], "attack_sip [bold red]" + item["attack_sip"] + "[/bold red]"
             , "aalarm_sip", item["alarm_sip"], "XFF", item["x_forwarded_for"], "repeat_count", item["repeat_count"]
             , "Time:", time.strftime("%Y-%m-%d %H:%M:%S", time.localtime(item["access_time"]/1000)))
-        if not is_len(item["x_forwarded_for"].split(",")[0]):
+        elif not is_len(item["x_forwarded_for"].split(",")[0]):
             console.bell()
             console.print("[*] Warning ⚠️ : Threat", item["type"], item["threat_name"], "attack_sip", item["attack_sip"],
             "aalarm_sip", item["alarm_sip"], "XFF [bold red]" + item["x_forwarded_for"] + "[/bold red]", "repeat_count", item["repeat_count"]
