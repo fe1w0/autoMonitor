@@ -1,3 +1,6 @@
+# skyeye 服务器地址
+server_ip: xx.xx.xx.xx
+
 # 身份认证
 # session: "cdb21305dcefc27f5f767c9347afeed9f33d733f10cc404719f82ede0cdd304ccf907ea92515xxxx"
 session: ""
