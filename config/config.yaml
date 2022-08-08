@@ -1,0 +1,83 @@
+# 身份认证
+# session: "cdb21305dcefc27f5f767c9347afeed9f33d733f10cc404719f82ede0cdd304ccf907ea92515xxxx"
+session: ""
+
+# Debug 
+debug: False
+
+# 是否只警报(been) 公网ip的攻击
+check_len: True
+
+# 查找上限
+search_limit: 10000
+
+# 关闭 Handle 处理通知
+disable_print_handled: False
+
+# 刷新时 单位: 秒
+refresh_time: 40
+
+# 查找的时间间隔 单位: 分钟
+select_time: 10
+
+# 忽视攻击类型
+# ignor_threat:
+#  - attack_type
+ignor_threat: 
+  - "发现VPN工具OpenVPN通信行为"
+  - "MiningPool矿池异常访问事件" 
+  - "ACK_FLOOD"
+
+# 白名单 ip
+white_list: 
+  - 10.10.10.10
+
+# 已提交的事件名
+reported_threat_names:
+  - "RDP账号暴力猜解"
+  - "Realtek SDK 任意命令注入漏洞(CVE-2021-35394)"
+  - "H3C Magic R100 命令执行漏洞 (CVE-2022-34598)"
+  - "发现系统命令注入行为"
+  - "基于Basic Authentication认证的暴力破解"
+  - "Shell命令执行(机器学习)"
+  - "疑似SSH账号暴力猜解"
+  - "发现API接口个人信息泄露"
+  - "SIPfoundry sipXtapi畸形CSeq字段处理远程缓冲区溢出漏洞"  
+  
+# 已提交的事件
+# threat_name:
+# - attack_ip
+
+reported_threats:
+  "RDP账号暴力猜解":
+   - 8.8.8.8
+  "Realtek SDK 任意命令注入漏洞(CVE-2021-35394)":
+   - 8.8.8.8
+  "H3C Magic R100 命令执行漏洞 (CVE-2022-34598)":
+   - 8.8.8.8
+  "发现系统命令注入行为":
+   - 8.8.8.8
+  "SQL注入攻击":
+   - 8.8.8.8
+  "基于Basic Authentication认证的暴力破解":
+   - 8.8.8.8
+  "Shell命令执行(机器学习)":
+   - 8.8.8.8
+  "疑似SSH账号暴力猜解":
+   - 8.8.8.87
+  "发现API接口个人信息泄露":
+   - 8.8.8.8
+  "SIPfoundry sipXtapi畸形CSeq字段处理远程缓冲区溢出漏洞":
+   - 8.8.8.8
+
+# 危险的攻击类型
+warning_types:
+  - 代码执行
+  - 命令执行
+  - webshell利用
+  - webshell上传
+  - SQL注入
+  - 暴力猜解
+  - 信息泄露
+  - 文件上传
+  - 【攻击利用】非授权访问/权限绕过
