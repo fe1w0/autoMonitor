@@ -73,20 +73,15 @@ def get_new_csrf_token(user_session, debug=False):
     # 获取用户的具体token
     raw = """
 GET /skyeye/v1/system/device/city-geo-info HTTP/2
-Host: 10.188.26.92
+Host: {server_ip}
 Cookie: session={user_session}
 Sec-Ch-Ua: " Not;A Brand";v="99", "Microsoft Edge";v="103", "Chromium";v="103"
 Accept: application/json, text/plain, */*
 Sec-Ch-Ua-Mobile: ?0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 Edg/103.0.1264.71
-Sec-Ch-Ua-Platform: "macOS"
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: cors
-Sec-Fetch-Dest: empty
-Referer: https://10.188.26.92/skyeye/home/alarm/alarm
+User-Agent: Mozilla/5.0 Chrome/103.0.5060.134 Edg/103.0.1264.71
 Accept-Encoding: gzip, deflate
 Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
-Connection: close""".format(user_session=user_session)
+Connection: close""".format(server_ip=config.monitor_config['server_ip'], user_session=user_session)
     hack = HackRequests.hackRequests()
     result =  json.loads(hack.httpraw(raw=raw, ssl=True).text())
     if debug:
@@ -106,20 +101,15 @@ def get_current_log(user_session, current_timestamp, past_timestamp, search_limi
     # 获得当前一小时内的日志信息
     raw = """
 GET /skyeye/v1/alarm/alarm/list?offset=1&limit={search_limit}&order_by=access_time:desc&is_accurate=0&data_source=1&host_state=&alarm_sip=&attack_sip=&ioc=&asset_group=&threat_name=&attack_stage=&branch_id=&x_forwarded_for=&is_web_attack=&host=&status_http=&alarm_source=&staff_name=&uri=&alert_rule=&sip=&dip=&sport=&dport=&dst_mac=&src_mac=&vlan_id=&proto=&serial_num=&threat_type=&hazard_level=&status=&attck_org=&attck=&alarm_id=&attack_dimension=&is_white=0&focus_label=&marks=&asset_ip=&user_label=&start_time={past_timestamp}&end_time={current_timestamp}&csrf_token={csrf_token}&r=0.15947662660939077 HTTP/2
-Host: 10.188.26.92
+Host: {server_ip}
 Cookie: session={user_session}
 Sec-Ch-Ua: " Not;A Brand";v="99", "Microsoft Edge";v="103", "Chromium";v="103"
 Accept: application/json, text/plain, */*
 Sec-Ch-Ua-Mobile: ?0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 Edg/103.0.1264.71
-Sec-Ch-Ua-Platform: "macOS"
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: cors
-Sec-Fetch-Dest: empty
-Referer: https://10.188.26.92/skyeye/home/alarm/alarm
+User-Agent: Mozilla/5.0 Chrome/103.0.5060.134 Edg/103.0.1264.71
 Accept-Encoding: gzip, deflate
 Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
-Connection: close""".format(search_limit=search_limit, past_timestamp=past_timestamp, csrf_token=csrf_token
+Connection: close""".format(server_ip=config.monitor_config['server_ip'], search_limit=search_limit, past_timestamp=past_timestamp, csrf_token=csrf_token
                             , current_timestamp=current_timestamp, user_session=user_session)        
     if debug:
         print(raw)
@@ -135,22 +125,17 @@ def handle_log_remote(log_item, csrf_token, user_session, debug=False):
     # 标灰 log_item，后期改用多线程
     format_raw = """
 GET /skyeye/v1/alarm/alarm/user-label?data_source=1&user_label=1&alarm_ids={id}&csrf_token={csrf_token}&r=0.4259559188144866 HTTP/2
-Host: 10.188.26.92
+Host: {server_ip}
 Cookie: session={user_session}
 Pragma: no-cache
 Cache-Control: no-cache
 Sec-Ch-Ua: " Not;A Brand";v="99", "Microsoft Edge";v="103", "Chromium";v="103"
 Accept: application/json, text/plain, */*
 Sec-Ch-Ua-Mobile: ?0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 Edg/103.0.1264.71
-Sec-Ch-Ua-Platform: "macOS"
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: cors
-Sec-Fetch-Dest: empty
-Referer: https://10.188.26.92/skyeye/home/alarm/alarm
+User-Agent: Mozilla/5.0 Chrome/103.0.5060.134 Edg/103.0.1264.71
 Accept-Encoding: gzip, deflate
 Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
-Connection: close""".format(id=log_item["id"], csrf_token=csrf_token, user_session=user_session)
+Connection: close""".format(server_ip=config.monitor_config['server_ip'], id=log_item["id"], csrf_token=csrf_token, user_session=user_session)
     hack = HackRequests.hackRequests()
     result =  hack.httpraw(format_raw, ssl=True)
     if debug:
@@ -169,26 +154,21 @@ def handle_log_remote_thread(handle_list, csrf_token, user_session, debug=False)
     # 可设置http访问的超时时间，不设置则默认为10s。线程数量[threadnum]设置根据自己电脑配置设置，默认为10,值越大线程越多同一秒访问的网站数量也越多。
     raw = """
 GET /skyeye/v1/alarm/alarm/user-label?data_source=1&user_label=1&alarm_ids={id}&csrf_token={csrf_token}&r=0.4259559188144866 HTTP/2
-Host: 10.188.26.92
+Host: {server_ip}
 Cookie: session={user_session}
 Pragma: no-cache
 Cache-Control: no-cache
 Sec-Ch-Ua: " Not;A Brand";v="99", "Microsoft Edge";v="103", "Chromium";v="103"
 Accept: application/json, text/plain, */*
 Sec-Ch-Ua-Mobile: ?0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 Edg/103.0.1264.71
-Sec-Ch-Ua-Platform: "macOS"
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: cors
-Sec-Fetch-Dest: empty
-Referer: https://10.188.26.92/skyeye/home/alarm/alarm
+User-Agent: Mozilla/5.0 Chrome/103.0.5060.134 Edg/103.0.1264.71
 Accept-Encoding: gzip, deflate
 Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
 Connection: close"""
     for log_item in handle_list:
         if debug:
             print(raw)
-        raw = raw.format(id=log_item["id"], csrf_token=csrf_token, user_session=user_session)
+        raw = raw.format(server_ip=config.monitor_config['server_ip'], id=log_item["id"], csrf_token=csrf_token, user_session=user_session)
         print_handled_log(item=log_item)
         threadpool.httpraw(raw, ssl=True)
     threadpool.run()
@@ -200,23 +180,18 @@ def handle_log_remote_pool(handle_list, csrf_token, user_session, debug=False):
         hack = HackRequests.hackRequests()
         raw = """
 GET /skyeye/v1/alarm/alarm/user-label?data_source=1&user_label=1&alarm_ids={id}&csrf_token={csrf_token}&r=0.4259559188144866 HTTP/2
-Host: 10.188.26.92
+Host: {server_ip}
 Cookie: session={user_session}
 Pragma: no-cache
 Cache-Control: no-cache
 Sec-Ch-Ua: " Not;A Brand";v="99", "Microsoft Edge";v="103", "Chromium";v="103"
 Accept: application/json, text/plain, */*
 Sec-Ch-Ua-Mobile: ?0
-User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/103.0.5060.134 Safari/537.36 Edg/103.0.1264.71
-Sec-Ch-Ua-Platform: "macOS"
-Sec-Fetch-Site: same-origin
-Sec-Fetch-Mode: cors
-Sec-Fetch-Dest: empty
-Referer: https://10.188.26.92/skyeye/home/alarm/alarm
+User-Agent: Mozilla/5.0 Chrome/103.0.5060.134 Edg/103.0.1264.71
 Accept-Encoding: gzip, deflate
 Accept-Language: zh-CN,zh;q=0.9,en;q=0.8,en-GB;q=0.7,en-US;q=0.6
 Connection: close"""
-        raw = raw.format(id=log_item["id"], csrf_token=csrf_token, user_session=user_session)
+        raw = raw.format(server_ip=config.monitor_config['server_ip'], id=log_item["id"], csrf_token=csrf_token, user_session=user_session)
         result = json.loads(hack.httpraw(raw, ssl=True).text())
         try:
             if result["data"]["status"] == 1000:
